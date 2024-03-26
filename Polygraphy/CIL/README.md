@@ -1,8 +1,5 @@
-# Run
 
-Polygraphy 中的 run 工具常用于对比模型在不同框架下的推理结果。
-
-## 对比 TensorRT 和 ONNX-Runtime
+# 1. 对比 TensorRT 和 ONNX-Runtime
 
 ```shell
 polygraphy run ../models/ResNet-18.onnx \
@@ -54,7 +51,6 @@ polygraphy run ../models/ResNet-18.onnx \
 
 （1）未通过
 
-此时会给出详细的数据分布
 ```
 [I] Accuracy Comparison | trt-runner-N0-03/22/24-14:58:44 vs. onnxrt-runner-N0-03/22/24-14:58:44
 [I]     Comparing Output: 'y' (dtype=float32, shape=(1, 1000)) with 'y' (dtype=float32, shape=(1, 1000))
@@ -119,6 +115,8 @@ polygraphy run ../models/ResNet-18.onnx \
 ```
 
 （2）通过
+
+启用 `--verbose` 选项，可以得到类似未通过时的详细数据分布信息。
 ```
 [I] Accuracy Comparison | trt-runner-N0-03/22/24-17:07:24 vs. onnxrt-runner-N0-03/22/24-17:07:24
 [I]     Comparing Output: 'y' (dtype=float32, shape=(1, 1000)) with 'y' (dtype=float32, shape=(1, 1000))
@@ -162,3 +160,70 @@ polygraphy run ../models/ResNet-18.onnx \
 注意：`--trt-outputs mark all` 有时会因为不同的时序、层融合选择、格式约束
 （differences in timing, layer fusion choices, and format constraints）
 影响生成的引擎，从而规避了输出不匹配的情况。此时可能要使用更复杂的方法来切分模型并生成复现错误的测试用例。
+
+# 2. 保存输入输出
+保存输入和输出值，第二次运行时加载输入作为输入，加载输出作为对比数据。
+```shell
+polygraphy run ../models/ResNet-18.onnx \
+    --onnxrt \
+    --save-inputs inputs.json \
+    --save-outputs outputs.json
+```
+
+```shell
+polygraphy run ../models/ResNet-18.onnx \
+    --trt \
+    --load-inputs inputs.json \
+    --load-outputs outputs.json
+```
+
+只要输入输出相匹配，还可以用这种方式直接对比 TensorRT 引擎和 ONNX。
+首先把 ONNX 转为 TensorRT 引擎并保存，然后使用之前 ONNX-Runtime 保存的输入输出进行对比。
+
+```shell
+polygraphy convert ../models/ResNet-18.onnx \
+    -o ResNet-18.engine
+```
+
+```shell
+polygraphy run --trt ResNet-18.engine \
+    --model-type=engine \
+    --load-inputs inputs.json \
+    --load-outputs outputs.json
+```
+
+# 3. 生成 Python 脚本
+非常方便的一个功能，当 CIL 命令不足以满足需求时，可以先生成 Python 脚本，满足一些基础需求，
+然后在此基础上修改脚本，能更便捷的满足更复杂的功能；
+或者在使用 Polygraphy Python API 时有些功能不知道怎么实现，
+但用 CIL 能实现时，可以直接生成脚本，学习 Python API 的使用方法。 
+
+```shell
+polygraphy run ../models/ResNet-18.onnx \
+    --trt --onnxrt \
+    --input-shapes x:[1,3,224,224] \
+    --atol 1e-8 --rtol 1e-8 \
+    --trt-outputs  mark all \
+    --onnx-outputs  mark all \
+    --gen-script=compare_trt_onnxrt.py
+```
+
+# 4. 检查异常值 NaN 和 Inf 
+
+官方给出的示例模型较为简单，这里使用 [ResNet_div_zero.py](..%2Fgenerate_onnx%2FResNet_div_zero.py) 
+在 ResNet-18 的最后一个全连接层后面新增一个 Div 节点，进行除0操作。
+`-vv` 用于显示详细信息。
+
+```shell
+python ResNet_div_zero.py
+```
+```shell
+polygraphy run ../models/ResNet_div_zero.onnx \
+    --onnxrt --validate \
+    -vv
+```
+```shell
+polygraphy run ../models/ResNet_div_zero.onnx \
+    --trt --validate \
+    -vv
+```
