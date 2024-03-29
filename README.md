@@ -3,6 +3,8 @@
 [TensorRT Doc Archives](https://docs.nvidia.com/deeplearning/tensorrt/archives/index.html)
 TensorRT 相关文档链接合集
 
+[TensorRT Python API](https://docs.nvidia.com/deeplearning/tensorrt/api/python_api/)
+
 [GitHub TensorRT - Tool](https://github.com/NVIDIA/TensorRT/tree/release/8.6/tools)
 
 
