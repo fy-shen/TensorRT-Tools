@@ -24,8 +24,8 @@ polygraphy run needs_constraints.onnx \
     --onnx-outputs mark all \
     --check-error-stat median > log.log
 ```
-观察日志信息，从 `Add` 层引入了绝对误差 1~2，
-`Sub` 层输出在 FP16 下为 0~0.2，在 FP32 下为 1~2。
+观察日志信息，从 `Add` 层引入了绝对误差 1\~2，
+`Sub` 层输出在 FP16 下为 0\~0.2，在 FP32 下为 1\~2。
 
 <details>
 <summary>add_out_1</summary>
