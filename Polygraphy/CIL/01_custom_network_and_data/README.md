@@ -1,6 +1,6 @@
 
 
-有时会有以下需求：
+此例主要解决以下需求：
 1. 用 TensorRT Python API 从头构建一个网络
 2. 修改现有网络
 3. 自定义 TensorRT 构建器配置
@@ -14,12 +14,12 @@
 先生成模板，再编写脚本
 
 ```shell
-polygraphy template trt-network -o trt_network_def.py
+polygraphy template trt-network -o create_network.py
 polygraphy template trt-config -o trt_network_cfg.py
 ```
 可以选择需要修改的网络；也可以用构建器配置选项填充脚本，例如启用 FP16
 ```shell
-polygraphy template trt-network ../../models/ResNet-18.onnx -o trt_network_def.py
+polygraphy template trt-network ../../models/ResNet-18.onnx -o create_network.py
 polygraphy template trt-config --fp16 -o trt_network_cfg.py
 ```
 
@@ -65,17 +65,18 @@ polygraphy run resnet_fp16.engine --trt \
     --load-inputs input.json \
     --load-outputs output.josn
 ```
-用 `inspect model` 查看引擎的信息，`--show layers attrs weights` 可查看更多细节
+用 `inspect model` 查看引擎的信息，`--show layers attrs weights` 可查看更多细节，
+
 
 注：`--show layers` 仅在使用 `profiling_verbosity` 而不是 `None` 构建引擎时有效，详细程度越高，层信息越多。
 ```shell
 polygraphy inspect model resnet_fp32.engine \
     --show layers
 ```
-
+支持配合 `gerp` 筛选信息
 ```shell
 polygraphy inspect model resnet_fp16.engine \
-    --show layers
+    --show layers | grep -i softmax
 ```
 另外，可以将支持的格式转换为 TensorRT 网络并输出信息
 ```shell
