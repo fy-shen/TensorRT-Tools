@@ -7,7 +7,7 @@
 4. 使用自定义数据作为输入，而不是用 Polygraphy 生成的数据
 5. 使用自定义数据作为输出对比，例如 Pytorch 的输出
 
-这些可以通过 Polygraphy CIL 工具配合 Python 脚本实现。
+这些可以通过 Polygraphy CLI 工具配合 Python 脚本实现。
 
 ## 生成模板
 

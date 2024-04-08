@@ -181,15 +181,15 @@ polygraphy run loader.py --precision-constraints obey \
     --check-error-stat median
 ```
 
-# 测试
+# 优化策略测试
 
 ```bash
 bash test.sh
 ```
 总结一些现象（复现结果可能会与 TensorRT 版本和硬件相关）
 
-1. 第二项测试，即仅在 CIL 中启用 `--fp16` 时，得到的引擎精度依然是 FP32；
-2. 三种方式下强制 `Add` 和 `Sub` 层为 FP16，都会使 FP16 生效，但层会产生融合，导致不会出现数值溢出的问题；
+1. 第二项测试，即仅在 CLI 中启用 `--fp16` 时，得到的引擎精度依然是 FP32；
+2. 强制 `Add` 和 `Sub` 层为 FP16 时，FP16 生效，但层会产生融合，导致不会出现数值溢出的问题；
 3. 观察 `tactics` 相关日志信息，TensorRT 所使用的优化策略有所不同。
 在引擎构建过程中，TensorRT 会运行多种 kernel 来选择最佳的，但每次运行可能略有不同，
 导致优化策略并不固定。可以使用 `--save-tactics` 和 `--load-tactics` 来保存和加载优化策略；

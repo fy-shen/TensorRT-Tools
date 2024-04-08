@@ -193,10 +193,10 @@ polygraphy run --trt ResNet-18.engine \
 ```
 
 # 3. 生成 Python 脚本
-非常方便的一个功能，当 CIL 命令不足以满足需求时，可以先生成 Python 脚本，满足一些基础需求，
-然后在此基础上修改脚本，能更便捷的满足更复杂的功能；
+非常方便的一个功能，当 CLI 命令不足以满足需求时，可以先生成 Python 脚本，满足一些基础需求，
+然后在此基础上修改脚本，能更便捷地满足更复杂的功能；
 或者在使用 Polygraphy Python API 时有些功能不知道怎么实现，
-但用 CIL 能实现时，可以直接生成脚本，学习 Python API 的使用方法。 
+但用 CLI 能实现时，可以直接生成脚本，学习 Python API 的使用方法。 
 
 ```shell
 polygraphy run ../models/ResNet-18.onnx \
@@ -210,7 +210,7 @@ polygraphy run ../models/ResNet-18.onnx \
 
 # 4. 检查异常值 NaN 和 Inf 
 
-官方给出的示例模型较为简单，这里使用 [ResNet_div_zero.py](..%2Fgenerate_onnx%2FResNet_div_zero.py) 
+官方给出的示例模型较为简单，这里使用 [ResNet_div_zero.py](..%2Fgenerate_onnx%2FResNet_div_zero.py)
 在 ResNet-18 的最后一个全连接层后面新增一个 Div 节点，进行除0操作。
 `-vv` 用于显示详细信息。
 
