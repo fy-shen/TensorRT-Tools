@@ -33,3 +33,14 @@ polygraphy inspect model subgraph.onnx \
 可以使用 `--model-inputs` 和 `Data Loader` 下选项设置输入数据的形状和内容。
 
 这样会导致生成的子图输入为固定的形状，可以在子图上再次使用 `extract` 并设置动态尺寸的形状。
+
+
+# 分割能否转 TensorRT 的子图
+创建一个网络，其中包含一个 TensorRT 不支持的 `NonZero` 节点
+```shell
+python create_network.py
+```
+分析 Onnx 转 TensorRT 失败原因，并将可以转换和不能转换的子图分割保存
+```shell
+polygraphy inspect capability model.onnx
+```

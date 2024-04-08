@@ -73,7 +73,7 @@ polygraphy run resnet_fp16.engine --trt \
 polygraphy inspect model resnet_fp32.engine \
     --show layers
 ```
-支持配合 `gerp` 筛选信息
+支持配合 `grep` 筛选信息
 ```shell
 polygraphy inspect model resnet_fp16.engine \
     --show layers | grep -i softmax
